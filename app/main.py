@@ -1,3 +1,4 @@
+from app.config import WEAK_CONCEPT_THRESHOLD
 from fastapi import FastAPI, HTTPException
 from app.models import QuestionCreate, StudentAnswer
 from app.database import add_question, get_question, add_student_record, get_student_mastery
@@ -29,7 +30,6 @@ def submit_answer(answer: StudentAnswer):
         answer.student_answer
     )
 
-    # Store student record
     add_student_record({
         "student_id": answer.student_id,
         "question_id": answer.question_id,
@@ -38,10 +38,23 @@ def submit_answer(answer: StudentAnswer):
 
     mastery = get_student_mastery(answer.student_id)
 
+    #Identify weak concepts
+    weak_concepts = [
+        concept for concept, score in mastery.items()
+        if score < WEAK_CONCEPT_THRESHOLD
+    ]
+
+    #Basic remediation suggestions
+    remediation = {}
+    for concept in weak_concepts:
+        remediation[concept] = f"Revise the fundamentals of {concept} and practice 2-3 related questions."
+
     return {
         "similarity_score": round(similarity, 3),
         "marks_awarded": marks,
         "max_marks": question["max_marks"],
         "concept_breakdown": concept_scores,
-        "current_mastery": mastery
+        "current_mastery": mastery,
+        "weak_concepts": weak_concepts,
+        "remediation_suggestions": remediation
     }

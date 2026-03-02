@@ -5,19 +5,7 @@
         "model_answer": "Photosynthesis is the process by which plants use sunlight to convert carbon dioxide and water into glucose and oxygen.",
         "max_marks": 5,
         "tagged_concepts": {
-            "Photosynthesis Definition": "Process where plants use sunlight to convert CO2 and water into glucose and oxygen.",
-            "Inputs": "Carbon dioxide and water are required.",
-            "Outputs": "Glucose and oxygen are produced."
-        }
-    },
-    {
-        "question_id": "q2",
-        "question_text": "Explain sucrose",
-        "model_answer": "Sucrose is a common disaccharide carbohydrate composed of glucose and fructose. It is naturally found in many plants, with high concentrations in sugar beets and sugarcane, from which it is extracted.",
-        "max_marks": 5,
-        "tagged_concepts": {
-            "Sucrose Definition": "common disaccharide carbohydrate.",
-            "Composition": "composed of glucose and fructose."
+            "Photosynthesis Definition": "Process where plants use sunlight to convert carbon dioxide and water into glucose and oxygen."
         }
     }
 ]
