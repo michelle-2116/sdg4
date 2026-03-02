@@ -1,7 +1,7 @@
 from app.config import WEAK_CONCEPT_THRESHOLD
 from fastapi import FastAPI, HTTPException
 from app.models import QuestionCreate, StudentAnswer
-from app.database import add_question, get_question, add_student_record, get_student_mastery
+from app.database import add_question, get_question, add_student_record, get_student_mastery, get_class_mastery
 from app.grading import compute_similarity, calculate_marks, evaluate_concepts
 
 app = FastAPI(title="Semantic Evaluation Platform")
@@ -57,4 +57,18 @@ def submit_answer(answer: StudentAnswer):
         "current_mastery": mastery,
         "weak_concepts": weak_concepts,
         "remediation_suggestions": remediation
+    }
+
+@app.get("/class-analytics")
+def class_analytics():
+    class_mastery = get_class_mastery()
+
+    weak_concepts = [
+        concept for concept, score in class_mastery.items()
+        if score < WEAK_CONCEPT_THRESHOLD
+    ]
+
+    return {
+        "class_mastery": class_mastery,
+        "weak_concepts_classwide": weak_concepts
     }

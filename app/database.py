@@ -60,3 +60,22 @@ def get_student_mastery(student_id):
         )
 
     return mastery
+
+def get_class_mastery():
+    records = load_student_records()
+
+    concept_totals = {}
+    concept_counts = {}
+
+    for r in records:
+        for concept, score in r["concept_scores"].items():
+            concept_totals[concept] = concept_totals.get(concept, 0) + score
+            concept_counts[concept] = concept_counts.get(concept, 0) + 1
+
+    class_mastery = {}
+    for concept in concept_totals:
+        class_mastery[concept] = round(
+            concept_totals[concept] / concept_counts[concept], 3
+        )
+
+    return class_mastery
