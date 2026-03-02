@@ -1,0 +1,25 @@
+# Virtual environments
+venv/
+env/
+sdg4/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# HuggingFace cache
+.cache/
+.huggingface/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Local data (optional if you don’t want to upload test data)
+data/student_records.json
