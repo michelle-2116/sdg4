@@ -14,5 +14,6 @@ class QuestionCreate(BaseModel):
     # }
 
 class StudentAnswer(BaseModel):
+    student_id: str
     question_id: str
     student_answer: str

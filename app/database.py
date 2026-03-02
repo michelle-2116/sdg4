@@ -24,3 +24,39 @@ def get_question(question_id):
         if q["question_id"] == question_id:
             return q
     return None
+
+STUDENT_PATH = Path("data/student_records.json")
+
+def load_student_records():
+    if not STUDENT_PATH.exists():
+        return []
+    with open(STUDENT_PATH, "r") as f:
+        return json.load(f)
+
+def save_student_records(records):
+    with open(STUDENT_PATH, "w") as f:
+        json.dump(records, f, indent=4)
+
+def add_student_record(record):
+    records = load_student_records()
+    records.append(record)
+    save_student_records(records)
+
+def get_student_mastery(student_id):
+    records = load_student_records()
+    concept_totals = {}
+    concept_counts = {}
+
+    for r in records:
+        if r["student_id"] == student_id:
+            for concept, score in r["concept_scores"].items():
+                concept_totals[concept] = concept_totals.get(concept, 0) + score
+                concept_counts[concept] = concept_counts.get(concept, 0) + 1
+
+    mastery = {}
+    for concept in concept_totals:
+        mastery[concept] = round(
+            concept_totals[concept] / concept_counts[concept], 3
+        )
+
+    return mastery
