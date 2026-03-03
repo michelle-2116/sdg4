@@ -79,3 +79,37 @@ def get_class_mastery():
         )
 
     return class_mastery
+
+def get_student_trend(student_id):
+    records = load_student_records()
+
+    concept_history = {}
+
+    # Collect chronological scores
+    for r in records:
+        if r["student_id"] == student_id:
+            for concept, score in r["concept_scores"].items():
+                if concept not in concept_history:
+                    concept_history[concept] = []
+                concept_history[concept].append(score)
+
+    trend_analysis = {}
+
+    for concept, scores in concept_history.items():
+        if len(scores) < 2:
+            trend_analysis[concept] = {
+                "scores": scores,
+                "improving": False,
+                "declining": False
+            }
+            continue
+
+        change = scores[-1] - scores[0]
+
+        trend_analysis[concept] = {
+            "scores": scores,
+            "improving": change > 0.1,
+            "declining": change < -0.1
+        }
+
+    return trend_analysis

@@ -1,10 +1,18 @@
+from fastapi.middleware.cors import CORSMiddleware
 from app.config import WEAK_CONCEPT_THRESHOLD
 from fastapi import FastAPI, HTTPException
 from app.models import QuestionCreate, StudentAnswer
-from app.database import add_question, get_question, add_student_record, get_student_mastery, get_class_mastery
+from app.database import add_question, get_question, add_student_record, get_student_mastery, get_class_mastery, get_student_trend
 from app.grading import compute_similarity, calculate_marks, evaluate_concepts
 
 app = FastAPI(title="Semantic Evaluation Platform")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/add-question")
 def create_question(question: QuestionCreate):
@@ -49,6 +57,8 @@ def submit_answer(answer: StudentAnswer):
     for concept in weak_concepts:
         remediation[concept] = f"Revise the fundamentals of {concept} and practice 2-3 related questions."
 
+    trend = get_student_trend(answer.student_id)
+    
     return {
         "similarity_score": round(similarity, 3),
         "marks_awarded": marks,
@@ -56,7 +66,8 @@ def submit_answer(answer: StudentAnswer):
         "concept_breakdown": concept_scores,
         "current_mastery": mastery,
         "weak_concepts": weak_concepts,
-        "remediation_suggestions": remediation
+        "remediation_suggestions": remediation,
+        "trend_analysis": trend
     }
 
 @app.get("/class-analytics")
