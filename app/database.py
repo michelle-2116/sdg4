@@ -113,3 +113,25 @@ def get_student_trend(student_id):
         }
 
     return trend_analysis
+
+def get_all_students():
+    records = load_student_records()
+
+    student_data = {}
+
+    for r in records:
+        sid = r["student_id"]
+        if sid not in student_data:
+            student_data[sid] = []
+
+        avg_score = sum(r["concept_scores"].values()) / len(r["concept_scores"])
+        student_data[sid].append(avg_score)
+
+    result = []
+    for sid, scores in student_data.items():
+        result.append({
+            "student_id": sid,
+            "average_mastery": round(sum(scores) / len(scores), 3)
+        })
+
+    return result

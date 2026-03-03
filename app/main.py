@@ -2,7 +2,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import WEAK_CONCEPT_THRESHOLD
 from fastapi import FastAPI, HTTPException
 from app.models import QuestionCreate, StudentAnswer
-from app.database import add_question, get_question, add_student_record, get_student_mastery, get_class_mastery, get_student_trend
+from app.database import add_question, get_question, add_student_record, get_student_mastery, get_class_mastery, get_student_trend, load_questions, get_all_students
 from app.grading import compute_similarity, calculate_marks, evaluate_concepts
 
 app = FastAPI(title="Semantic Evaluation Platform")
@@ -82,4 +82,35 @@ def class_analytics():
     return {
         "class_mastery": class_mastery,
         "weak_concepts_classwide": weak_concepts
+    }
+
+@app.get("/questions")
+def get_questions():
+    questions = load_questions()
+    return [
+        {
+            "question_id": q["question_id"],
+            "question_text": q["question_text"]
+        }
+        for q in questions
+    ]
+
+@app.get("/students")
+def list_students():
+    return get_all_students()
+
+@app.get("/student/{student_id}")
+def student_detail(student_id: str):
+    mastery = get_student_mastery(student_id)
+    trend = get_student_trend(student_id)
+
+    weak = [
+        c for c, v in mastery.items()
+        if v < WEAK_CONCEPT_THRESHOLD
+    ]
+
+    return {
+        "mastery": mastery,
+        "trend": trend,
+        "weak_concepts": weak
     }

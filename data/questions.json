@@ -1,11 +1,29 @@
 [
     {
-        "question_id": "q1",
-        "question_text": "Explain photosynthesis",
-        "model_answer": "Photosynthesis is the process by which plants use sunlight to convert carbon dioxide and water into glucose and oxygen.",
+        "question_id": "1",
+        "question_text": "What are the three main parts of a seed?",
+        "model_answer": "The three main parts are the seed coat (outer protection), the cotyledon (stored food), and the embryo (the baby plant).",
         "max_marks": 5,
         "tagged_concepts": {
-            "Photosynthesis Definition": "Process where plants use sunlight to convert carbon dioxide and water into glucose and oxygen."
+            "Parts of seed": "Parts of seed"
+        }
+    },
+    {
+        "question_id": "2",
+        "question_text": "What is the function of the seed coat?",
+        "model_answer": "The seed coat acts like a shield to protect the delicate internal parts of the seed from damage, insects, or drying out.",
+        "max_marks": 5,
+        "tagged_concepts": {
+            "Parts of seed": "Parts of seed"
+        }
+    },
+    {
+        "question_id": "3",
+        "question_text": "What three things does a seed need to begin germination?",
+        "model_answer": "A seed needs air (oxygen), water (moisture), and the right amount of warmth.",
+        "max_marks": 5,
+        "tagged_concepts": {
+            "Germination": "Germination"
         }
     }
 ]
