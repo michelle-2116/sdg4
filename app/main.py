@@ -257,6 +257,15 @@ def submit_paper(
         "question_results": question_results
     }
 
+@app.get("/submissions/{student_id}")
+def get_student_submissions(student_id: str):
+    submissions = load_submissions()
+    return [s for s in submissions if s["student_id"] == student_id]
+
+@app.get("/questions-full")
+def get_questions_full():
+    return load_questions()
+
 @app.get("/paper-results/{paper_id}")
 def get_paper_results(paper_id: str):
     submissions = load_submissions()
