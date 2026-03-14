@@ -2,22 +2,97 @@
   {
     "student_id": "1",
     "paper_id": "1",
-    "total_marks": 8.57,
+    "total_marks": 6.470000000000001,
     "question_results": {
       "1": {
         "marks": 4.2,
         "max_marks": 5,
         "similarity": 0.841,
         "concept_scores": {
-          "Parts of seed": 0.797
+          "Parts of seed": 0.841
+        },
+        "explanation": {
+          "similarity_label": "Good",
+          "similarity_percentage": 84.1,
+          "feedback": "Your answer captures the main ideas well but could be more complete.",
+          "matched_concepts": [
+            {
+              "concept": "Parts of seed",
+              "score": 0.841
+            }
+          ],
+          "partial_concepts": [],
+          "missing_concepts": []
         }
       },
       "2": {
-        "marks": 4.37,
+        "marks": 2.27,
         "max_marks": 5,
-        "similarity": 0.874,
+        "similarity": 0.453,
         "concept_scores": {
-          "Parts of seed": 0.633
+          "Parts of seed": 0.453
+        },
+        "explanation": {
+          "similarity_label": "Poor",
+          "similarity_percentage": 45.3,
+          "feedback": "Your answer does not sufficiently address the question. Please review the topic carefully. Missing concepts: Parts of seed.",
+          "matched_concepts": [],
+          "partial_concepts": [],
+          "missing_concepts": [
+            {
+              "concept": "Parts of seed",
+              "score": 0.453
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "student_id": "2",
+    "paper_id": "1",
+    "total_marks": 6.470000000000001,
+    "question_results": {
+      "1": {
+        "marks": 4.2,
+        "max_marks": 5,
+        "similarity": 0.841,
+        "concept_scores": {
+          "Parts of seed": 0.841
+        },
+        "explanation": {
+          "similarity_label": "Good",
+          "similarity_percentage": 84.1,
+          "feedback": "Your answer captures the main ideas well but could be more complete.",
+          "matched_concepts": [
+            {
+              "concept": "Parts of seed",
+              "score": 0.841
+            }
+          ],
+          "partial_concepts": [],
+          "missing_concepts": []
+        }
+      },
+      "2": {
+        "marks": 2.27,
+        "max_marks": 5,
+        "similarity": 0.453,
+        "concept_scores": {
+          "Parts of seed": 0.453
+        },
+        "explanation": {
+          "similarity_label": "Poor",
+          "similarity_percentage": 45.3,
+          "feedback": "Your answer does not sufficiently address the question. Please review the topic carefully. Missing concepts: Parts of seed.",
+          "matched_concepts": [],
+          "partial_concepts": [],
+          "missing_concepts": [
+            {
+              "concept": "Parts of seed",
+              "score": 0.453
+            }
+          ]
         }
       }
     }

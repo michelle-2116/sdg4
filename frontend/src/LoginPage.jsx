@@ -1,198 +1,184 @@
 import { useState } from "react";
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500;600&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --champagne: #EACEAA;
-    --honey-garlic: #85431E;
-    --whiskey-sour: #D39858;
-    --burnt-coffee: #34150F;
-    --balsamico: #150C0C;
+    --bg:          #06080b;
+    --surface:     #0d1520;
+    --surface2:    #111d2b;
+    --border:      #1c2e40;
+    --border2:     #2a4258;
+    --accent:      #00e5ff;
+    --accent-dim:  rgba(0,229,255,0.07);
+    --accent-glow: rgba(0,229,255,0.18);
+    --text:        #ddeeff;
+    --text2:       #7a9bb5;
+    --muted:       #3d5570;
+    --danger:      #ff3a5c;
+    --danger-soft: rgba(255,58,92,0.09);
   }
 
-  body { background: var(--balsamico); font-family: 'DM Sans', sans-serif; color: var(--champagne); }
+  body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--text); }
+
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
+  }
 
   .login-root {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    min-height: 100vh; display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
   }
 
+  /* ─ LEFT ─ */
   .login-left {
-    background: linear-gradient(160deg, var(--balsamico) 0%, var(--burnt-coffee) 60%, #4a1e0a 100%);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 80px;
-    position: relative;
-    overflow: hidden;
+    background: var(--bg);
+    padding: 60px 70px;
+    display: flex; flex-direction: column; justify-content: center;
+    position: relative; overflow: hidden;
   }
 
   .login-left::before {
-    content: '';
-    position: absolute;
-    width: 560px; height: 560px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(211,152,88,0.08) 0%, transparent 65%);
-    top: -150px; left: -150px;
-    pointer-events: none;
+    content: ''; position: absolute;
+    inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 60%, rgba(0,229,255,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 80% 20%, rgba(0,229,255,0.03) 0%, transparent 70%);
   }
 
+  /* grid lines */
   .login-left::after {
-    content: '';
-    position: absolute;
-    width: 380px; height: 380px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(133,67,30,0.2) 0%, transparent 70%);
-    bottom: 20px; right: 20px;
-    pointer-events: none;
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 30% 50%, black 30%, transparent 80%);
+  }
+
+  .brand-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 4px;
+    color: var(--accent); text-transform: uppercase;
+    margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+  }
+  .brand-eyebrow::before {
+    content: ''; display: block; width: 24px; height: 1px; background: var(--accent);
   }
 
   .brand-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 52px;
-    font-weight: 700;
-    line-height: 1.1;
-    color: var(--champagne);
-    margin-bottom: 20px;
-    letter-spacing: 0.5px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 72px; font-weight: 800; line-height: 0.9;
+    color: var(--text); letter-spacing: -1px;
+    text-transform: uppercase; margin-bottom: 28px;
   }
-
-  .brand-title span { color: var(--whiskey-sour); }
+  .brand-title span { color: var(--accent); display: block; }
 
   .brand-desc {
-    font-size: 15px;
-    color: rgba(234,206,170,0.65);
-    line-height: 1.8;
-    max-width: 380px;
-    margin-bottom: 56px;
+    font-size: 14px; color: var(--text2); line-height: 1.8;
+    max-width: 400px; margin-bottom: 52px;
   }
 
-  .brand-desc strong { color: var(--champagne); }
-
-  .feature-list { display: flex; flex-direction: column; gap: 14px; }
-
+  .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; }
   .feature-item {
-    display: flex; align-items: center; gap: 12px;
-    font-size: 14px; color: rgba(234,206,170,0.6);
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
+    color: var(--muted); text-transform: uppercase;
   }
-
   .feature-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--whiskey-sour); flex-shrink: 0;
+    width: 6px; height: 6px; flex-shrink: 0;
+    background: var(--accent); opacity: 0.5;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
   }
 
+  /* ─ RIGHT ─ */
   .login-right {
-    background: var(--burnt-coffee);
+    background: var(--surface);
+    border-left: 1px solid var(--border);
     display: flex; align-items: center; justify-content: center;
-    padding: 60px 80px;
-    border-left: 1px solid rgba(133,67,30,0.3);
+    padding: 60px 64px;
+    position: relative;
+  }
+  .login-right::before {
+    content: ''; position: absolute; top: 0; left: -1px; bottom: 0; width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--accent) 50%, transparent);
+    opacity: 0.25;
   }
 
-  .login-card { width: 100%; max-width: 400px; }
+  .login-card { width: 100%; max-width: 380px; }
 
-  .login-card h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 34px; font-weight: 600;
-    color: var(--champagne); margin-bottom: 8px;
-    letter-spacing: 0.3px;
+  .login-heading {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 32px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--text); margin-bottom: 4px;
   }
-
-  .login-card .subtitle {
-    font-size: 14px;
-    color: rgba(234,206,170,0.5);
-    margin-bottom: 36px;
-  }
+  .login-sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
 
   .role-tabs {
     display: grid; grid-template-columns: 1fr 1fr;
-    background: rgba(21,12,12,0.6);
-    border: 1px solid rgba(133,67,30,0.35);
-    border-radius: 10px;
-    padding: 4px;
-    margin-bottom: 28px;
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 3px; margin-bottom: 26px; gap: 3px;
   }
-
   .role-tab {
     padding: 10px; border: none; cursor: pointer;
-    border-radius: 8px; font-family: 'DM Sans', sans-serif;
-    font-size: 14px; font-weight: 500;
-    transition: all 0.2s;
-    background: transparent;
-    color: rgba(234,206,170,0.45);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    transition: all 0.18s; background: transparent; color: var(--muted);
   }
-
   .role-tab.active {
-    background: var(--honey-garlic);
-    color: var(--champagne);
-    font-weight: 600;
-    box-shadow: 0 2px 14px rgba(133,67,30,0.45);
+    background: var(--accent); color: var(--bg);
   }
 
-  .form-group { margin-bottom: 18px; }
-
+  .form-group { margin-bottom: 16px; }
   .form-label {
-    display: block; font-size: 11px; font-weight: 600;
-    color: rgba(234,206,170,0.5); margin-bottom: 8px;
-    letter-spacing: 0.8px; text-transform: uppercase;
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;
   }
-
   .form-input {
-    width: 100%; padding: 12px 16px;
-    background: rgba(21,12,12,0.5);
-    border: 1px solid rgba(133,67,30,0.35);
-    border-radius: 8px; color: var(--champagne);
-    font-family: 'DM Sans', sans-serif; font-size: 15px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    outline: none;
+    width: 100%; padding: 11px 14px;
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Barlow', sans-serif; font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s; outline: none;
   }
-
   .form-input:focus {
-    border-color: var(--whiskey-sour);
-    box-shadow: 0 0 0 3px rgba(211,152,88,0.12);
+    border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow);
   }
-  .form-input::placeholder { color: rgba(234,206,170,0.25); }
+  .form-input::placeholder { color: var(--muted); opacity: 0.5; }
 
   .login-btn {
     width: 100%; padding: 13px;
-    background: linear-gradient(135deg, var(--honey-garlic), var(--whiskey-sour));
-    border: none; border-radius: 8px;
-    color: var(--champagne); font-family: 'DM Sans', sans-serif;
-    font-size: 15px; font-weight: 700;
-    cursor: pointer; margin-top: 8px;
-    transition: opacity 0.2s, transform 0.1s;
-    letter-spacing: 0.4px;
-    box-shadow: 0 4px 20px rgba(133,67,30,0.35);
+    background: var(--accent); border: none; color: var(--bg);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+    cursor: pointer; margin-top: 8px; transition: all 0.15s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
   }
-
-  .login-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-  .login-btn:active { transform: translateY(0); }
+  .login-btn:hover { background: #33eeff; box-shadow: 0 4px 24px var(--accent-glow); }
+  .login-btn:active { transform: scale(0.99); }
 
   .error-msg {
-    background: rgba(133,67,30,0.15);
-    border: 1px solid rgba(211,152,88,0.3);
-    color: var(--whiskey-sour); border-radius: 8px;
-    padding: 12px 16px; font-size: 13px; margin-bottom: 18px;
+    background: var(--danger-soft); border-left: 2px solid var(--danger);
+    color: #ff6b78; padding: 11px 14px; font-size: 13px; margin-bottom: 16px;
   }
 
   .demo-hint {
-    margin-top: 22px; padding: 14px 16px;
-    background: rgba(21,12,12,0.4);
-    border: 1px solid rgba(133,67,30,0.25);
-    border-radius: 8px; font-size: 12px;
-    color: rgba(234,206,170,0.45); line-height: 1.7;
+    margin-top: 24px; padding: 14px 16px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-left: 2px solid var(--accent);
+    font-size: 12px; color: var(--muted); line-height: 1.9;
   }
-
-  .demo-hint strong { color: var(--whiskey-sour); }
+  .demo-hint strong { color: var(--accent); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.5px; }
 
   @media (max-width: 768px) {
     .login-root { grid-template-columns: 1fr; }
     .login-left { display: none; }
-    .login-right { padding: 40px 24px; background: var(--balsamico); }
+    .login-right { padding: 40px 24px; background: var(--bg); }
   }
 `;
 
@@ -219,7 +205,7 @@ export default function LoginPage({ onLogin }) {
     if (match) {
       onLogin({ id: match.id, role, name: match.name });
     } else {
-      setError("Invalid credentials. Please check your ID and password.");
+      setError("Invalid credentials. Check your ID and password.");
     }
   };
 
@@ -229,38 +215,52 @@ export default function LoginPage({ onLogin }) {
     <>
       <style>{styles}</style>
       <div className="login-root">
+
+        {/* LEFT */}
         <div className="login-left">
+          <div className="brand-eyebrow">AI-Powered Grading System</div>
           <h1 className="brand-title">
-            <span>AI4OneEarth</span><br />Project Name
+            Smart<span>Grade</span>
           </h1>
           <p className="brand-desc">
-            Team Name: <strong>Miro</strong><br />
-            AI-powered semantic grading and learning analytics.
-            Understand student mastery at the concept level, not just marks.
+            Semantic evaluation at the concept level — not just marks.
+            Real-time mastery tracking and AI-generated remediation for every student.
           </p>
-          <div className="feature-list">
-            <div className="feature-item"><div className="feature-dot" />Automatic PDF answer grading</div>
-            <div className="feature-item"><div className="feature-dot" />Concept-level mastery tracking</div>
-            <div className="feature-item"><div className="feature-dot" />Personalised remediation insights</div>
-            <div className="feature-item"><div className="feature-dot" />Class-wide analytics for teachers</div>
+          <div className="feature-grid">
+            {[
+              "PDF Auto-Grading",
+              "Concept Mastery",
+              "Trend Analysis",
+              "AI Remediation",
+              "Class Analytics",
+              "Paper Builder",
+            ].map(f => (
+              <div key={f} className="feature-item">
+                <div className="feature-dot" />
+                {f}
+              </div>
+            ))}
           </div>
         </div>
 
+        {/* RIGHT */}
         <div className="login-right">
           <div className="login-card">
-            <h2>Welcome back</h2>
-            <p className="subtitle">Sign in to your account to continue</p>
+            <h2 className="login-heading">Sign In</h2>
+            <p className="login-sub">Access your dashboard to continue</p>
 
             <div className="role-tabs">
-              <button className={`role-tab ${role === "student" ? "active" : ""}`} onClick={() => { setRole("student"); setError(""); }}>
-                Student
-              </button>
-              <button className={`role-tab ${role === "teacher" ? "active" : ""}`} onClick={() => { setRole("teacher"); setError(""); }}>
-                Teacher
-              </button>
+              <button
+                className={`role-tab ${role === "student" ? "active" : ""}`}
+                onClick={() => { setRole("student"); setError(""); }}
+              >Student</button>
+              <button
+                className={`role-tab ${role === "teacher" ? "active" : ""}`}
+                onClick={() => { setRole("teacher"); setError(""); }}
+              >Teacher</button>
             </div>
 
-            {error && <div className="error-msg">⚠️ {error}</div>}
+            {error && <div className="error-msg">⚠ {error}</div>}
 
             <div className="form-group">
               <label className="form-label">{role === "student" ? "Student" : "Teacher"} ID</label>
@@ -272,7 +272,6 @@ export default function LoginPage({ onLogin }) {
                 onKeyDown={handleKeyDown}
               />
             </div>
-
             <div className="form-group">
               <label className="form-label">Password</label>
               <input
@@ -286,16 +285,17 @@ export default function LoginPage({ onLogin }) {
             </div>
 
             <button className="login-btn" onClick={handleLogin}>
-              Sign In →
+              Authenticate →
             </button>
 
             <div className="demo-hint">
-              <strong>Demo credentials</strong><br />
-              Student: ID <strong>1</strong> / password <strong>student1</strong><br />
-              Teacher: ID <strong>t1</strong> / password <strong>teacher1</strong>
+              <strong>Demo Credentials</strong><br />
+              Student — ID: <strong>1</strong> &nbsp;/&nbsp; Password: <strong>student1</strong><br />
+              Teacher — ID: <strong>t1</strong> &nbsp;/&nbsp; Password: <strong>teacher1</strong>
             </div>
           </div>
         </div>
+
       </div>
     </>
   );

@@ -337,7 +337,7 @@ function ExamSubmission({ studentId }) {
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: 28, fontWeight: 700, color: "var(--text)", marginBottom: 4, fontFamily: "'Cormorant Garamond', serif" }}>
+                <div style={{ fontSize: 28, fontWeight: 700, color: "var(--text)", marginBottom: 4, fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase' }}>
                   {result.total_marks.toFixed(1)} / {totalMax}
                 </div>
                 <div style={{ fontSize: 14, color: "var(--muted)" }}>Total marks across all questions</div>
