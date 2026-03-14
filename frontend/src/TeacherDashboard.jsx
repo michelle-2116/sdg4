@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { globalStyles } from "./styles";
+import SyllabusUpload from "./SyllabusUpload";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid,
   ResponsiveContainer, LineChart, Line
@@ -15,6 +16,7 @@ function Sidebar({ active, setActive, user, onLogout }) {
     { id: "students", icon: "👥", label: "Students" },
     { id: "questions", icon: "❓", label: "Question Bank" },
     { id: "papers", icon: "📄", label: "Papers" },
+    { id: "syllabus", icon: "📚", label: "Syllabus" },
   ];
 
   return (
@@ -708,6 +710,7 @@ export default function TeacherDashboard({ user, onLogout }) {
           {active === "students" && <Students />}
           {active === "questions" && <QuestionBank />}
           {active === "papers" && <Papers />}
+          {active === "syllabus" && <SyllabusUpload />}
         </div>
       </div>
     </>

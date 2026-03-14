@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { globalStyles } from "./styles";
+import TopicSearch from "./TopicSearch";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer
 } from "recharts";
@@ -11,6 +12,7 @@ function Sidebar({ active, setActive, user, onLogout }) {
   const navItems = [
     { id: "exam", icon: "📝", label: "Submit Exam" },
     { id: "results", icon: "📊", label: "My Results" },
+    { id: "search", icon: "🔍", label: "Topic Search" },
   ];
   return (
     <div className="sidebar">
@@ -337,7 +339,7 @@ function ExamSubmission({ studentId }) {
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: 28, fontWeight: 700, color: "var(--text)", marginBottom: 4, fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase' }}>
+                <div style={{ fontSize: 28, fontWeight: 700, color: "var(--text)", marginBottom: 4, fontFamily: "'Cormorant Garamond', serif" }}>
                   {result.total_marks.toFixed(1)} / {totalMax}
                 </div>
                 <div style={{ fontSize: 14, color: "var(--muted)" }}>Total marks across all questions</div>
@@ -631,6 +633,7 @@ export default function StudentDashboard({ user, onLogout }) {
         <div className="main-content">
           {active === "exam" && <ExamSubmission studentId={user.id} />}
           {active === "results" && <MyResults studentId={user.id} />}
+          {active === "search" && <TopicSearch />}
         </div>
       </div>
     </>

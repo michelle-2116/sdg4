@@ -1,6 +1,8 @@
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import WEAK_CONCEPT_THRESHOLD, MEDIUM_CONCEPT_THRESHOLD
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
+from pathlib import Path
+from youtubesearchpython import VideosSearch
 from app.models import QuestionCreate, StudentAnswer
 from app.database import (
     add_question, get_question, add_student_record,
@@ -341,4 +343,248 @@ def get_paper_results(paper_id: str):
         "average_marks": round(avg_marks, 2),
         "question_average": question_average,
         "submissions": paper_subs
+    }
+### ── SYLLABUS ROUTES ── append these to main.py ──────────────────────
+### Also add to imports at top of main.py:
+###   from pathlib import Path
+###   import json, fitz  (already imported)
+###   (youtube_search_python: pip install youtube-search-python)
+###   from youtubesearchpython import VideosSearch
+
+### ── DATA PATHS ────────────────────────────────────────────────────────
+SYLLABUS_META_PATH = Path("data/syllabus.json")   # stores extracted topics + raw text per page
+SYLLABUS_PDF_PATH  = Path("data/syllabus.pdf")    # the uploaded PDF
+
+
+def load_syllabus_meta():
+    if not SYLLABUS_META_PATH.exists():
+        return None
+    with open(SYLLABUS_META_PATH) as f:
+        return json.load(f)
+
+
+def save_syllabus_meta(meta):
+    SYLLABUS_META_PATH.parent.mkdir(exist_ok=True)
+    with open(SYLLABUS_META_PATH, "w") as f:
+        json.dump(meta, f, indent=2)
+
+
+### ── 1. TEACHER: Upload + extract syllabus ───────────────────────────
+@app.post("/upload-syllabus")
+async def upload_syllabus(file: UploadFile = File(...)):
+    """
+    Teacher uploads a syllabus PDF.
+    - Extracts full text per page using PyMuPDF
+    - Uses Gemini to extract a structured topic list with page references
+    - Saves both the PDF and the structured metadata
+    """
+    pdf_bytes = await file.read()
+
+    # Save raw PDF for potential re-processing
+    SYLLABUS_PDF_PATH.parent.mkdir(exist_ok=True)
+    with open(SYLLABUS_PDF_PATH, "wb") as f:
+        f.write(pdf_bytes)
+
+    # Extract text per page
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    pages = []
+    full_text_for_ai = ""
+    for i, page in enumerate(doc):
+        text = page.get_text().strip()
+        pages.append({"page": i + 1, "text": text})
+        full_text_for_ai += f"\n[Page {i+1}]\n{text}\n"
+
+    # Use Gemini to extract structured topic list
+    prompt = f"""
+You are a curriculum analyst. Below is the full text of an educational syllabus document extracted from a PDF.
+
+Your task:
+1. Extract ALL topics and subtopics mentioned in the syllabus.
+2. For each topic, identify the page number(s) where it appears.
+3. Infer the academic level/difficulty (beginner / intermediate / advanced) based on context clues.
+
+Respond ONLY in this exact JSON format (no markdown, no backticks):
+{{
+  "subject": "Overall subject name (e.g. Biology, Physics)",
+  "level": "Overall academic level (e.g. Grade 10, Undergraduate Year 1)",
+  "topics": [
+    {{
+      "id": "t1",
+      "name": "Topic name",
+      "subtopics": ["subtopic 1", "subtopic 2"],
+      "pages": [1, 2],
+      "difficulty": "beginner|intermediate|advanced",
+      "keywords": ["keyword1", "keyword2"]
+    }}
+  ]
+}}
+
+SYLLABUS TEXT:
+{full_text_for_ai[:12000]}
+"""
+
+    try:
+        response = client.models.generate_content(
+            model="models/gemini-flash-latest",
+            contents=prompt
+        )
+        raw = response.text.strip()
+        if raw.startswith("```"):
+            raw = raw.split("```")[1]
+            if raw.startswith("json"):
+                raw = raw[4:]
+        raw = raw.strip()
+        structured = json.loads(raw)
+    except Exception as e:
+        return {"error": f"Failed to parse syllabus: {str(e)}"}
+
+    meta = {
+        "filename": file.filename,
+        "total_pages": len(pages),
+        "pages": pages,
+        "structured": structured,
+    }
+    save_syllabus_meta(meta)
+
+    return {
+        "message": "Syllabus uploaded and processed successfully",
+        "filename": file.filename,
+        "total_pages": len(pages),
+        "subject": structured.get("subject"),
+        "level": structured.get("level"),
+        "topic_count": len(structured.get("topics", [])),
+        "topics": structured.get("topics", []),
+    }
+
+
+### ── 2. GET: Return stored syllabus topics ──────────────────────────
+@app.get("/syllabus")
+def get_syllabus():
+    """Returns the currently stored syllabus metadata and topic list."""
+    meta = load_syllabus_meta()
+    if not meta:
+        return {"available": False}
+    s = meta["structured"]
+    return {
+        "available": True,
+        "filename": meta["filename"],
+        "total_pages": meta["total_pages"],
+        "subject": s.get("subject"),
+        "level": s.get("level"),
+        "topics": s.get("topics", []),
+    }
+
+
+### ── 3. STUDENT: Search topic → cite syllabus + YouTube link ────────
+@app.post("/search-topic")
+async def search_topic(payload: dict):
+    """
+    Student submits a topic query.
+    - Searches the stored syllabus for matching content
+    - Returns page citations and difficulty level
+    - Finds a relevant YouTube video at the right academic level
+    """
+    query = payload.get("query", "").strip()
+    if not query:
+        raise HTTPException(status_code=400, detail="Query cannot be empty")
+
+    meta = load_syllabus_meta()
+
+    syllabus_context = ""
+    syllabus_available = meta is not None
+
+    if syllabus_available:
+        s = meta["structured"]
+        topics_json = json.dumps(s.get("topics", []), indent=2)
+        syllabus_context = f"""
+The student's institution uses this syllabus:
+Subject: {s.get("subject", "Unknown")}
+Level: {s.get("level", "Unknown")}
+Topics (with page references):
+{topics_json}
+"""
+
+    # Use Gemini to match topic to syllabus + generate search query
+    prompt = f"""
+You are an academic assistant helping a student find learning resources.
+
+{syllabus_context if syllabus_available else "No syllabus has been uploaded yet."}
+
+Student query: "{query}"
+
+Your task:
+1. Search the syllabus topics above for the closest matching topic to the student's query.
+2. If found: note the topic name, page numbers, and difficulty level.
+3. If not found in the syllabus: state clearly it is not in the syllabus but still help the student.
+4. Generate the BEST possible YouTube search query to find a high-quality educational video at the right difficulty level.
+
+Respond ONLY in this exact JSON format (no markdown, no backticks):
+{{
+  "found_in_syllabus": true,
+  "matched_topic": "Exact topic name from syllabus",
+  "matched_subtopics": ["relevant subtopic"],
+  "pages": [1, 2],
+  "difficulty": "beginner|intermediate|advanced",
+  "syllabus_note": "Brief note about where/how this appears in the syllabus, or why it was not found",
+  "youtube_search_query": "specific search query for YouTube e.g. 'photosynthesis light reactions explained GCSE'"
+}}
+"""
+
+    try:
+        response = client.models.generate_content(
+            model="models/gemini-flash-latest",
+            contents=prompt
+        )
+        raw = response.text.strip()
+        if raw.startswith("```"):
+            raw = raw.split("```")[1]
+            if raw.startswith("json"):
+                raw = raw[4:]
+        ai_result = json.loads(raw.strip())
+    except Exception as e:
+        return {"error": f"AI analysis failed: {str(e)}"}
+
+    # YouTube search
+    import urllib.parse
+    youtube_results = []
+    yt_query = ai_result.get("youtube_search_query", query)
+    try:
+        from youtubesearchpython import VideosSearch
+        vs = VideosSearch(yt_query, limit=3)
+        results = vs.result()
+        for v in (results.get("result") or []):
+            youtube_results.append({
+                "title": v.get("title"),
+                "url": f"https://www.youtube.com/watch?v={v.get('id')}",
+                "channel": v.get("channel", {}).get("name"),
+                "duration": v.get("duration"),
+                "views": v.get("viewCount", {}).get("short"),
+                "thumbnail": v.get("thumbnails", [{}])[0].get("url"),
+            })
+    except Exception as e:
+        print(f"YouTube search error: {e}")
+
+    # Always fallback to a search link so the student gets something
+    if not youtube_results:
+        youtube_results = [{
+            "title": f"Search YouTube: {yt_query}",
+            "url": f"https://www.youtube.com/results?search_query={urllib.parse.quote(yt_query)}",
+            "channel": None,
+            "duration": None,
+            "views": None,
+            "thumbnail": None,
+            "is_search_link": True,
+        }]
+
+    return {
+        "query": query,
+        "syllabus_available": syllabus_available,
+        "found_in_syllabus": ai_result.get("found_in_syllabus", False),
+        "matched_topic": ai_result.get("matched_topic"),
+        "matched_subtopics": ai_result.get("matched_subtopics", []),
+        "pages": ai_result.get("pages", []),
+        "difficulty": ai_result.get("difficulty"),
+        "syllabus_note": ai_result.get("syllabus_note"),
+        "youtube_search_query": ai_result.get("youtube_search_query"),
+        "youtube_results": youtube_results,
     }
