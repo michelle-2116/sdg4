@@ -1,24 +1,19 @@
 import { useState } from "react";
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --surface2: #1c2330;
-    --border: #2a3441;
-    --accent: #e8a020;
-    --accent2: #f5c842;
-    --text: #e6edf3;
-    --muted: #7d8590;
-    --danger: #e05555;
-    --success: #3fb950;
+    --champagne: #EACEAA;
+    --honey-garlic: #85431E;
+    --whiskey-sour: #D39858;
+    --burnt-coffee: #34150F;
+    --balsamico: #150C0C;
   }
 
-  body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); }
+  body { background: var(--balsamico); font-family: 'DM Sans', sans-serif; color: var(--champagne); }
 
   .login-root {
     min-height: 100vh;
@@ -27,7 +22,7 @@ const styles = `
   }
 
   .login-left {
-    background: linear-gradient(135deg, #0d1117 0%, #1a2332 50%, #0d1117 100%);
+    background: linear-gradient(160deg, var(--balsamico) 0%, var(--burnt-coffee) 60%, #4a1e0a 100%);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -40,90 +35,86 @@ const styles = `
   .login-left::before {
     content: '';
     position: absolute;
-    width: 500px; height: 500px;
+    width: 560px; height: 560px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(232,160,32,0.08) 0%, transparent 70%);
-    top: -100px; left: -100px;
+    background: radial-gradient(circle, rgba(211,152,88,0.08) 0%, transparent 65%);
+    top: -150px; left: -150px;
     pointer-events: none;
   }
 
   .login-left::after {
     content: '';
     position: absolute;
-    width: 300px; height: 300px;
+    width: 380px; height: 380px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(63,185,80,0.06) 0%, transparent 70%);
-    bottom: 50px; right: 50px;
+    background: radial-gradient(circle, rgba(133,67,30,0.2) 0%, transparent 70%);
+    bottom: 20px; right: 20px;
     pointer-events: none;
   }
 
-  .brand-icon {
-    width: 64px; height: 64px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 16px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px;
-    margin-bottom: 40px;
-    box-shadow: 0 8px 32px rgba(232,160,32,0.3);
-  }
-
   .brand-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 48px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
     font-weight: 700;
     line-height: 1.1;
-    color: var(--text);
+    color: var(--champagne);
     margin-bottom: 20px;
+    letter-spacing: 0.5px;
   }
 
-  .brand-title span { color: var(--accent); }
+  .brand-title span { color: var(--whiskey-sour); }
 
   .brand-desc {
-    font-size: 16px;
-    color: var(--muted);
-    line-height: 1.7;
+    font-size: 15px;
+    color: rgba(234,206,170,0.65);
+    line-height: 1.8;
     max-width: 380px;
-    margin-bottom: 60px;
+    margin-bottom: 56px;
   }
 
-  .feature-list { display: flex; flex-direction: column; gap: 16px; }
+  .brand-desc strong { color: var(--champagne); }
+
+  .feature-list { display: flex; flex-direction: column; gap: 14px; }
 
   .feature-item {
     display: flex; align-items: center; gap: 12px;
-    font-size: 14px; color: var(--muted);
+    font-size: 14px; color: rgba(234,206,170,0.6);
   }
 
   .feature-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--accent); flex-shrink: 0;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--whiskey-sour); flex-shrink: 0;
   }
 
   .login-right {
-    background: var(--surface);
+    background: var(--burnt-coffee);
     display: flex; align-items: center; justify-content: center;
     padding: 60px 80px;
-    border-left: 1px solid var(--border);
+    border-left: 1px solid rgba(133,67,30,0.3);
   }
 
   .login-card { width: 100%; max-width: 400px; }
 
   .login-card h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 32px; font-weight: 600;
-    color: var(--text); margin-bottom: 8px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 34px; font-weight: 600;
+    color: var(--champagne); margin-bottom: 8px;
+    letter-spacing: 0.3px;
   }
 
   .login-card .subtitle {
-    font-size: 14px; color: var(--muted); margin-bottom: 40px;
+    font-size: 14px;
+    color: rgba(234,206,170,0.5);
+    margin-bottom: 36px;
   }
 
   .role-tabs {
     display: grid; grid-template-columns: 1fr 1fr;
-    background: var(--surface2);
-    border: 1px solid var(--border);
+    background: rgba(21,12,12,0.6);
+    border: 1px solid rgba(133,67,30,0.35);
     border-radius: 10px;
     padding: 4px;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
   }
 
   .role-tab {
@@ -131,69 +122,77 @@ const styles = `
     border-radius: 8px; font-family: 'DM Sans', sans-serif;
     font-size: 14px; font-weight: 500;
     transition: all 0.2s;
-    background: transparent; color: var(--muted);
+    background: transparent;
+    color: rgba(234,206,170,0.45);
   }
 
   .role-tab.active {
-    background: var(--accent);
-    color: #0d1117;
+    background: var(--honey-garlic);
+    color: var(--champagne);
     font-weight: 600;
-    box-shadow: 0 2px 8px rgba(232,160,32,0.3);
+    box-shadow: 0 2px 14px rgba(133,67,30,0.45);
   }
 
-  .form-group { margin-bottom: 20px; }
+  .form-group { margin-bottom: 18px; }
 
   .form-label {
-    display: block; font-size: 13px; font-weight: 500;
-    color: var(--muted); margin-bottom: 8px; letter-spacing: 0.5px;
-    text-transform: uppercase;
+    display: block; font-size: 11px; font-weight: 600;
+    color: rgba(234,206,170,0.5); margin-bottom: 8px;
+    letter-spacing: 0.8px; text-transform: uppercase;
   }
 
   .form-input {
     width: 100%; padding: 12px 16px;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; color: var(--text);
+    background: rgba(21,12,12,0.5);
+    border: 1px solid rgba(133,67,30,0.35);
+    border-radius: 8px; color: var(--champagne);
     font-family: 'DM Sans', sans-serif; font-size: 15px;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
     outline: none;
   }
 
-  .form-input:focus { border-color: var(--accent); }
-  .form-input::placeholder { color: var(--muted); }
+  .form-input:focus {
+    border-color: var(--whiskey-sour);
+    box-shadow: 0 0 0 3px rgba(211,152,88,0.12);
+  }
+  .form-input::placeholder { color: rgba(234,206,170,0.25); }
 
   .login-btn {
-    width: 100%; padding: 14px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    width: 100%; padding: 13px;
+    background: linear-gradient(135deg, var(--honey-garlic), var(--whiskey-sour));
     border: none; border-radius: 8px;
-    color: #0d1117; font-family: 'DM Sans', sans-serif;
-    font-size: 15px; font-weight: 600;
+    color: var(--champagne); font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 700;
     cursor: pointer; margin-top: 8px;
     transition: opacity 0.2s, transform 0.1s;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.4px;
+    box-shadow: 0 4px 20px rgba(133,67,30,0.35);
   }
 
   .login-btn:hover { opacity: 0.9; transform: translateY(-1px); }
   .login-btn:active { transform: translateY(0); }
 
   .error-msg {
-    background: rgba(224,85,85,0.12); border: 1px solid rgba(224,85,85,0.3);
-    color: #ff8080; border-radius: 8px;
-    padding: 12px 16px; font-size: 13px; margin-bottom: 20px;
+    background: rgba(133,67,30,0.15);
+    border: 1px solid rgba(211,152,88,0.3);
+    color: var(--whiskey-sour); border-radius: 8px;
+    padding: 12px 16px; font-size: 13px; margin-bottom: 18px;
   }
 
   .demo-hint {
-    margin-top: 24px; padding: 16px;
-    background: rgba(232,160,32,0.06); border: 1px solid rgba(232,160,32,0.15);
-    border-radius: 8px; font-size: 12px; color: var(--muted);
-    line-height: 1.6;
+    margin-top: 22px; padding: 14px 16px;
+    background: rgba(21,12,12,0.4);
+    border: 1px solid rgba(133,67,30,0.25);
+    border-radius: 8px; font-size: 12px;
+    color: rgba(234,206,170,0.45); line-height: 1.7;
   }
 
-  .demo-hint strong { color: var(--accent); }
+  .demo-hint strong { color: var(--whiskey-sour); }
 
   @media (max-width: 768px) {
     .login-root { grid-template-columns: 1fr; }
     .login-left { display: none; }
-    .login-right { padding: 40px 24px; }
+    .login-right { padding: 40px 24px; background: var(--balsamico); }
   }
 `;
 
@@ -232,9 +231,10 @@ export default function LoginPage({ onLogin }) {
       <div className="login-root">
         <div className="login-left">
           <h1 className="brand-title">
-            Smart<span>Grade</span><br />Platform
+            <span>AI4OneEarth</span><br />Project Name
           </h1>
           <p className="brand-desc">
+            Team Name: <strong>Miro</strong><br />
             AI-powered semantic grading and learning analytics.
             Understand student mastery at the concept level, not just marks.
           </p>

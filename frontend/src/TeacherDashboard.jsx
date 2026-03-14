@@ -317,13 +317,11 @@ function QuestionBank() {
   const [questions, setQuestions] = useState([]);
   const [expanded, setExpanded] = useState(null);
 
-  // Add form state
   const [form, setForm] = useState({ question_id: "", question_text: "", model_answer: "", max_marks: 5, concepts: "" });
   const [msg, setMsg] = useState({ type: "", text: "" });
 
   const fetchQuestions = () => {
     axios.get(`${API}/questions-full`).then(r => setQuestions(r.data)).catch(() => {
-      // fallback to basic list endpoint
       axios.get(`${API}/questions`).then(r => setQuestions(r.data)).catch(console.error);
     });
   };
@@ -376,7 +374,7 @@ function QuestionBank() {
           {questions.length === 0 ? (
             <div className="empty-state card"><div className="empty-icon">❓</div><p>No questions yet. Add one!</p></div>
           ) : (
-            questions.map((q, i) => (
+            questions.map((q) => (
               <div key={q.question_id} className="card" style={{ marginBottom: 12, cursor: "pointer" }}
                 onClick={() => setExpanded(expanded === q.question_id ? null : q.question_id)}
               >
@@ -386,7 +384,7 @@ function QuestionBank() {
                       <span style={{ fontSize: 11, fontWeight: 700, color: "var(--accent)", letterSpacing: 1, textTransform: "uppercase" }}>
                         Q{q.question_id}
                       </span>
-                      {q.max_marks && <span className="badge badge-blue">{q.max_marks} marks</span>}
+                      {q.max_marks && <span className="badge badge-warning">{q.max_marks} marks</span>}
                     </div>
                     <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.5 }}>{q.question_text}</div>
                   </div>
@@ -472,7 +470,6 @@ function Papers() {
   const [selectedPaper, setSelectedPaper] = useState(null);
   const [paperResults, setPaperResults] = useState(null);
 
-  // Create form
   const [form, setForm] = useState({ paper_id: "", title: "", selected: [] });
   const [msg, setMsg] = useState({ type: "", text: "" });
 
@@ -681,7 +678,8 @@ function Papers() {
                       borderColor: form.selected.includes(q.question_id) ? "var(--accent)" : "var(--border)",
                       background: form.selected.includes(q.question_id) ? "var(--accent)" : "transparent",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      marginLeft: 12, flex: "shrink", color: "#0d1117", fontSize: 12, fontWeight: 700
+                      marginLeft: 12, flexShrink: 0,
+                      color: "var(--bg)", fontSize: 12, fontWeight: 700
                     }}>
                       {form.selected.includes(q.question_id) ? "✓" : ""}
                     </div>
