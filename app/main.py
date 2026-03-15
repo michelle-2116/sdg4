@@ -4,15 +4,17 @@ from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from pathlib import Path
 from youtubesearchpython import VideosSearch
 from app.models import QuestionCreate, StudentAnswer
+import json
 from app.database import (
     add_question, get_question, add_student_record,
     get_student_mastery, get_class_mastery, get_student_trend,
     load_questions, get_all_students, create_paper, get_paper,
     load_submissions, save_submissions, load_papers
 )
+
 from app.grading import (
     compute_similarity, calculate_marks, evaluate_concepts,
-    explain_score, generate_remediation
+    explain_score, generate_remediation, client
 )
 import re
 import fitz  # PyMuPDF
@@ -563,7 +565,8 @@ Respond ONLY in this exact JSON format (no markdown, no backticks):
             })
     except Exception as e:
         print(f"YouTube search error: {e}")
-
+    print(f"YouTube results count: {len(youtube_results)}")
+    print(f"YouTube results: {youtube_results}")
     # Always fallback to a search link so the student gets something
     if not youtube_results:
         youtube_results = [{

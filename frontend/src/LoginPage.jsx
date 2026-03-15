@@ -220,10 +220,10 @@ export default function LoginPage({ onLogin }) {
         <div className="login-left">
           <div className="brand-eyebrow">AI-Powered Grading System</div>
           <h1 className="brand-title">
-            Smart<span>Grade</span>
+            Edu<span>Access</span>
           </h1>
           <p className="brand-desc">
-            Semantic evaluation at the concept level — not just marks.
+            Semantic evaluation at the concept level- not just marks.
             Real-time mastery tracking and AI-generated remediation for every student.
           </p>
           <div className="feature-grid">

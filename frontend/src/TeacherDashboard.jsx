@@ -12,11 +12,11 @@ const API = "http://127.0.0.1:8000";
 // ── Sidebar ────────────────────────────────────────────────────────
 function Sidebar({ active, setActive, user, onLogout }) {
   const navItems = [
-    { id: "overview", icon: "🏛", label: "Class Overview" },
-    { id: "students", icon: "👥", label: "Students" },
-    { id: "questions", icon: "❓", label: "Question Bank" },
-    { id: "papers", icon: "📄", label: "Papers" },
-    { id: "syllabus", icon: "📚", label: "Syllabus" },
+    { id: "overview", label: "Class Overview" },
+    { id: "students", label: "Students" },
+    { id: "questions", label: "Question Bank" },
+    { id: "papers", label: "Papers" },
+    { id: "syllabus", label: "Syllabus" },
   ];
 
   return (
@@ -24,7 +24,7 @@ function Sidebar({ active, setActive, user, onLogout }) {
       <div className="sidebar-brand">
         <div className="sidebar-brand-icon">⟡</div>
         <div>
-          <div className="sidebar-brand-text">SmartGrade</div>
+          <div className="sidebar-brand-text">EduAccess</div>
           <div className="sidebar-brand-sub">Teacher Portal</div>
         </div>
       </div>
@@ -245,7 +245,7 @@ function Students() {
         {details && (
           <div>
             <div className="card" style={{ marginBottom: 16 }}>
-              <div className="card-title">📊 Student #{selectedId} — Mastery</div>
+              <div className="card-title">Student #{selectedId} — Mastery</div>
               {details.weak_concepts.length > 0 && (
                 <div className="alert alert-error" style={{ marginBottom: 16 }}>
                   Weak: <strong>{details.weak_concepts.join(", ")}</strong>
@@ -275,7 +275,7 @@ function Students() {
 
             {Object.keys(details.trend).length > 0 && (
               <div className="card">
-                <div className="card-title">📈 Trend Analysis</div>
+                <div className="card-title">Trend Analysis</div>
                 {Object.entries(details.trend).map(([concept, data]) => {
                   const chartData = data.scores.map((score, i) => ({
                     attempt: `#${i + 1}`, score: Math.round(score * 100)

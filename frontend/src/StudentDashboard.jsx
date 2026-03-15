@@ -10,16 +10,16 @@ const API = "http://127.0.0.1:8000";
 
 function Sidebar({ active, setActive, user, onLogout }) {
   const navItems = [
-    { id: "exam", icon: "📝", label: "Submit Exam" },
-    { id: "results", icon: "📊", label: "My Results" },
-    { id: "search", icon: "🔍", label: "Topic Search" },
+    { id: "exam", label: "Submit Exam" },
+    { id: "results", label: "My Results" },
+    { id: "search", label: "Topic Search" },
   ];
   return (
     <div className="sidebar">
       <div className="sidebar-brand">
-        <div className="sidebar-brand-icon">🎓</div>
+        <div className="sidebar-brand-icon">⟡</div>
         <div>
-          <div className="sidebar-brand-text">SmartGrade</div>
+          <div className="sidebar-brand-text">EduAccess</div>
           <div className="sidebar-brand-sub">Student Portal</div>
         </div>
       </div>
@@ -120,7 +120,7 @@ function RemediationCard({ concept, data }) {
         onClick={() => setOpen(o => !o)}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 16 }}>🎯</span>
+          <span style={{ fontSize: 16 }}></span>
           <div>
             <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>{concept}</div>
             <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>
@@ -160,7 +160,7 @@ function RemediationCard({ concept, data }) {
           {data.micro_lesson && (
             <div style={{ marginTop: 12 }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: "var(--blue)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6 }}>
-                📖 Micro Lesson
+                Micro Lesson
               </div>
               <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.7, background: "rgba(122,158,181,0.07)", padding: "12px 14px", borderRadius: 8, borderLeft: "2px solid var(--blue)" }}>
                 {data.micro_lesson}
@@ -255,7 +255,7 @@ function ExamSubmission({ studentId }) {
       {!result ? (
         <div className="two-col" style={{ alignItems: "start" }}>
           <div className="card">
-            <div className="card-title">📋 Submission Form</div>
+            <div className="card-title">Submission Form</div>
             {error && <div className="alert alert-error">⚠ {error}</div>}
 
             <div className="form-group">
@@ -286,7 +286,6 @@ function ExamSubmission({ studentId }) {
                     </div>
                   ) : (
                     <div>
-                      <div style={{ fontSize: 24, marginBottom: 6 }}>☁️</div>
                       <div style={{ fontSize: 14, color: "var(--muted)" }}>Click to upload PDF</div>
                       <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 4 }}>Format: Q1. [answer] Q2. [answer]</div>
                     </div>
@@ -297,13 +296,13 @@ function ExamSubmission({ studentId }) {
 
             <button className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: 13 }}
               onClick={handleSubmit} disabled={loading}>
-              {loading ? "⏳ Grading your answers..." : "Submit & Grade →"}
+              {loading ? "Grading your answers..." : "Submit & Grade →"}
             </button>
           </div>
 
           {paperDetails && (
             <div className="card">
-              <div className="card-title">📖 {paperDetails.title}</div>
+              <div className="card-title"> {paperDetails.title}</div>
               {paperDetails.questions.map(q => (
                 <div key={q.question_number} style={{
                   padding: "14px", background: "var(--surface2)", borderRadius: 8,
@@ -359,7 +358,7 @@ function ExamSubmission({ studentId }) {
           </div>
 
           <div className="card" style={{ marginBottom: 24 }}>
-            <div className="card-title">📋 Question-by-Question Breakdown</div>
+            <div className="card-title">Question-by-Question Breakdown</div>
             {Object.entries(result.question_results).map(([qNum, data]) => {
               const qPct = data.max_marks ? Math.round((data.marks / data.max_marks) * 100) : 0;
               const exp = data.explanation;
@@ -407,7 +406,7 @@ function ExamSubmission({ studentId }) {
 
           {result.remediation && Object.keys(result.remediation).length > 0 && (
             <div className="card">
-              <div className="card-title">🎯 Personalised Study Plan</div>
+              <div className="card-title">Personalised Study Plan</div>
               <p style={{ fontSize: 13, color: "var(--muted)", marginBottom: 20 }}>
                 Based on your answers, Gemini AI has identified these gaps and created a personalised remediation plan.
               </p>
@@ -491,7 +490,7 @@ function MyResults({ studentId }) {
 
       <div className="two-col" style={{ alignItems: "start", marginBottom: 24 }}>
         <div className="card">
-          <div className="card-title">📊 Concept Mastery</div>
+          <div className="card-title">Concept Mastery</div>
           {masteryArr.length === 0 ? (
             <div className="empty-state"><div className="empty-icon">📭</div><p>Submit your first paper to see mastery data.</p></div>
           ) : (
@@ -529,7 +528,7 @@ function MyResults({ studentId }) {
         </div>
 
         <div className="card">
-          <div className="card-title">📈 Progress Trend</div>
+          <div className="card-title">Progress Trend</div>
           {Object.keys(trend).length === 0 ? (
             <div className="empty-state"><div className="empty-icon">📭</div><p>No trend data yet.</p></div>
           ) : (
@@ -564,7 +563,7 @@ function MyResults({ studentId }) {
 
       {submissions.length > 0 && (
         <div className="card">
-          <div className="card-title">📜 Submission History</div>
+          <div className="card-title">Submission History</div>
           {submissions.map((s, i) => {
             const maxTotal = Object.values(s.question_results).reduce((a, q) => a + q.max_marks, 0);
             const pct = maxTotal ? Math.round((s.total_marks / maxTotal) * 100) : 0;
