@@ -1,3 +1,7 @@
+# Environment variables
+.env
+.env.*
+
 # Virtual environments
 venv/
 env/
@@ -21,5 +25,6 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Local data (optional if you don’t want to upload test data)
+# Data — student records and submissions contain personal data
 data/student_records.json
+data/submissions.json
